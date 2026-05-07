@@ -248,10 +248,10 @@
         const moistureRef = ref(db, "kelembapan_persen");
 
         onValue(moistureRef, (snapshot) => {
-            let percent = snapshot.val() || 0;
+            const value = snapshot.val() || 0;
 
-            // Clamp between 0–100
-            percent = Math.max(0, Math.min(100, percent));
+            // clamp 0–100
+            const percent = Math.max(0, Math.min(100, value));
 
             text.innerText = percent.toFixed(1) + "%";
 
@@ -267,7 +267,7 @@
                 text.style.color = "#6fff8c";
             } else {
                 statusLabel.innerText = "Wet";
-                text.style.color = "#95f8ba";
+                text.style.color = "#7fdcff";
             }
 
             const offset = circumference - (percent / 100) * circumference;
