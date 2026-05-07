@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GreenSync Dashboard</title>
 
     <style>
@@ -12,68 +12,57 @@
             font-family: 'Arial Narrow Bold', sans-serif;
             background: #05080c;
             color: #ffffff;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
-        h1 {
+        .app {
+            width: 100%;
+            max-width: 390px;
+            padding: 28px 20px 40px;
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .header {
             text-align: center;
-            margin-top: 20px;
-            letter-spacing: 2px;
+            margin-top: 10px;
         }
 
-        h1 span {
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
             color: #95f8ba;
         }
 
-        .container {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 40px;
+        .subtitle {
+            margin-top: 8px;
+            color: #8b8b8b;
+            font-size: 16px;
         }
 
-        /* LEFT PANEL */
-        .sidebar {
-            width: 180px;
-        }
-
-        .plant {
-            background: linear-gradient(90deg, #95f8ba, #4cd988);
-            padding: 12px;
-            border-radius: 20px;
+        /* SECTION TITLES */
+        .section-title {
             text-align: center;
-            color: #003;
-            font-weight: bold;
-            margin-bottom: 20px;
+            color: #a6ffb9;
+            font-size: 18px;
+            margin-top: 70px;
+            margin-bottom: 25px;
         }
 
-        .btn {
-            border: 2px solid #95f8ba;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .new-plant {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 90px;
-            background: #222;
-            text-align: center;
-            opacity: 0.7;
-        }
-
-        /* CENTER */
-        .center {
-            flex: 1;
-            text-align: center;
-        }
-
+        /* CIRCLE */
         .circle-wrapper {
             position: relative;
-            width: 350px;
-            height: 350px;
-            margin: 40px auto;
+            width: 280px;
+            height: 280px;
+            margin: auto;
         }
 
         svg {
@@ -82,16 +71,16 @@
 
         .bg-circle {
             fill: none;
-            stroke: #111;
-            stroke-width: 25;
+            stroke: #080b0f;
+            stroke-width: 26;
         }
 
         .progress {
             fill: none;
             stroke: url(#grad);
-            stroke-width: 25;
+            stroke-width: 26;
             stroke-linecap: round;
-            filter: drop-shadow(0 0 10px #95f8ba);
+            filter: drop-shadow(0 0 12px #95f8ba);
             transition: stroke-dashoffset 0.8s ease;
         }
 
@@ -104,117 +93,147 @@
         }
 
         .percent {
-            font-size: 60px;
+            font-size: 40px;
             color: #6fff8c;
             font-weight: bold;
+            line-height: 1;
         }
 
         .label {
-            color: #aaa;
             margin-top: 10px;
+            color: #9d9d9d;
+            font-size: 18px;
         }
 
-        /* RIGHT PANEL */
-        .right {
-            width: 250px;
-        }
-
+        /* CARD */
         .card {
-            border: 2px solid #95f8ba;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
             margin-top: 20px;
+            border: 3px solid #c6f2ff;
+            border-radius: 34px;
+            padding: 28px 24px 30px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .duration-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .duration-label {
+            color: #8c8c8c;
+            font-size: 16px;
         }
 
         .controls {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin: 10px 0;
+            gap: 14px;
         }
 
         .controls button {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             border: none;
-            background: #222;
+            background: transparent;
             color: white;
+            font-size: 20px;
             cursor: pointer;
+            padding: 0;
+        }
+
+        #duration {
+            min-width: 30px;
+            height: 36px;
+            background: #0d0d0d;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .start-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 28px;
         }
 
         .start {
-            margin-top: 10px;
-            padding: 10px 25px;
+            padding: 12px 34px;
             border: none;
-            border-radius: 20px;
-            background: linear-gradient(90deg, #95f8ba, #4cd988);
-            color: #003;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #c6f2ff, #7cff7c);
+            color: #2a3560;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(149, 248, 186, 0.25);
         }
     </style>
 </head>
 
 <body>
 
-    <h1><span>Green</span>Sync</h1>
+    <div class="app">
 
-    <div class="container">
-
-        <!-- LEFT -->
-        <div class="sidebar">
-            <div class="plant">Anthurium</div>
-            <!-- 
-            <div class="btn">M</div>
-            <div class="btn">C</div>
-            <div class="btn">P</div> -->
-
-            <div class="new-plant">+ New Plant</div>
+        <!-- HEADER -->
+        <div class="header">
+            <h1><span>Green</span>Sync</h1>
+            <div class="subtitle">Watering System Assistant</div>
         </div>
 
-        <!-- CENTER -->
-        <div class="center">
-            <h2>Soil Moisture Level</h2>
+        <!-- SOIL -->
+        <div class="section-title">Soil Moisture Level</div>
 
-            <div class="circle-wrapper">
-                <svg width="350" height="350">
-                    <defs>
-                        <linearGradient id="grad">
-                            <stop offset="0%" stop-color="#d4fbe4" />
-                            <stop offset="100%" stop-color="#95f8ba" />
-                        </linearGradient>
-                    </defs>
+        <div class="circle-wrapper">
 
-                    <circle class="bg-circle" cx="175" cy="175" r="140" />
-                    <circle id="progressCircle" class="progress" cx="175" cy="175" r="140" stroke-dasharray="879"
-                        stroke-dashoffset="879" />
-                </svg>
+            <svg width="280" height="280">
+                <defs>
+                    <linearGradient id="grad">
+                        <stop offset="0%" stop-color="#d4fbe4" />
+                        <stop offset="100%" stop-color="#78ff7b" />
+                    </linearGradient>
+                </defs>
 
-                <div class="circle-text">
-                    <div id="percentText" class="percent">0%</div>
-                    <div id="statusLabel" class="label">Dry</div>
-                </div>
+                <circle class="bg-circle" cx="140" cy="140" r="110" />
+
+                <circle id="progressCircle" class="progress" cx="140" cy="140" r="110" stroke-dasharray="691"
+                    stroke-dashoffset="691" />
+            </svg>
+
+            <div class="circle-text">
+                <div id="percentText" class="percent">0%</div>
+                <div id="statusLabel" class="label">Dry</div>
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="right">
-            <h2>Manual Watering</h2>
+        <!-- MANUAL -->
+        <div class="section-title">Manual Watering</div>
 
-            <div class="card">
-                <div>Duration (s)</div>
+        <div class="card">
+
+            <div class="duration-row">
+
+                <div class="duration-label">
+                    Duration (s)
+                </div>
 
                 <div class="controls">
-                    <button id="minusBtn">-</button>
+                    <button id="minusBtn">⊖</button>
+
                     <div id="duration">0</div>
-                    <button id="plusBtn">+</button>
+
+                    <button id="plusBtn">⊕</button>
                 </div>
 
+            </div>
+
+            <div class="start-wrapper">
                 <button class="start">Start</button>
             </div>
+
         </div>
 
     </div>
@@ -241,7 +260,8 @@
         const circle = document.getElementById("progressCircle");
         const text = document.getElementById("percentText");
         const statusLabel = document.getElementById("statusLabel");
-        const radius = 140;
+
+        const radius = 110;
         const circumference = 2 * Math.PI * radius;
 
         // Firebase listener
@@ -250,12 +270,10 @@
         onValue(moistureRef, (snapshot) => {
             const value = snapshot.val() || 0;
 
-            // clamp 0–100
             const percent = Math.max(0, Math.min(100, value));
 
             text.innerText = percent.toFixed(1) + "%";
 
-            // Update text and color based on moisture value
             if (percent < 40) {
                 statusLabel.innerText = "Dry";
                 text.style.color = "#d1473d";
@@ -281,10 +299,11 @@
 
         let durationValue = 0;
 
-        // Fetch duration from DB and sync UI
         const durationRef = ref(db, "manual_duration");
+
         onValue(durationRef, (snapshot) => {
             const val = snapshot.val();
+
             if (val !== null) {
                 durationValue = val;
                 durationText.innerText = durationValue;
@@ -300,6 +319,7 @@
         minusBtn.addEventListener("click", () => updateDuration(durationValue - 1));
         plusBtn.addEventListener("click", () => updateDuration(durationValue + 1));
     </script>
+
 </body>
 
 </html>
