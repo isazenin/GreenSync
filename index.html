@@ -245,15 +245,10 @@
         const circumference = 2 * Math.PI * radius;
 
         // Firebase listener
-        const moistureRef = ref(db, "sensor_kelembapan");
+        const moistureRef = ref(db, "kelembapan_persen");
 
         onValue(moistureRef, (snapshot) => {
-            const rawValue = snapshot.val() || 0;
-
-            // 215 = 40%
-            // 248 = 100%
-
-            let percent = 40 + ((rawValue - 215) * (60 / 33));
+            let percent = snapshot.val() || 0;
 
             // Clamp between 0–100
             percent = Math.max(0, Math.min(100, percent));
