@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenSync Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial Narrow Bold', sans-serif;
+            background: #05080c;
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        h1 span {
+            color: #95f8ba;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+        }
+
+        /* LEFT PANEL */
+        .sidebar {
+            width: 180px;
+        }
+
+        .plant {
+            background: linear-gradient(90deg, #95f8ba, #4cd988);
+            padding: 12px;
+            border-radius: 20px;
+            text-align: center;
+            color: #003;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            border: 2px solid #95f8ba;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .new-plant {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 90px;
+            background: #222;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* CENTER */
+        .center {
+            flex: 1;
+            text-align: center;
+        }
+
+        .circle-wrapper {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 40px auto;
+        }
+
+        svg {
+            transform: rotate(-90deg);
+        }
+
+        .bg-circle {
+            fill: none;
+            stroke: #111;
+            stroke-width: 25;
+        }
+
+        .progress {
+            fill: none;
+            stroke: url(#grad);
+            stroke-width: 25;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px #95f8ba);
+            transition: stroke-dashoffset 0.8s ease;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .percent {
+            font-size: 60px;
+            color: #6fff8c;
+            font-weight: bold;
+        }
+
+        .label {
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        /* RIGHT PANEL */
+        .right {
+            width: 250px;
+        }
+
+        .card {
+            border: 2px solid #95f8ba;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .controls button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        .start {
+            margin-top: 10px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #95f8ba, #4cd988);
+            color: #003;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1><span>Green</span>Sync</h1>
+
+    <div class="container">
+
+        <!-- LEFT -->
+        <div class="sidebar">
+            <div class="plant">Anthurium</div>
+            <!-- 
+            <div class="btn">M</div>
+            <div class="btn">C</div>
+            <div class="btn">P</div> -->
+
+            <div class="new-plant">+ New Plant</div>
+        </div>
+
+        <!-- CENTER -->
+        <div class="center">
+            <h2>Soil Moisture Level</h2>
+
+            <div class="circle-wrapper">
+                <svg width="350" height="350">
+                    <defs>
+                        <linearGradient id="grad">
+                            <stop offset="0%" stop-color="#d4fbe4" />
+                            <stop offset="100%" stop-color="#95f8ba" />
+                        </linearGradient>
+                    </defs>
+
+                    <circle class="bg-circle" cx="175" cy="175" r="140" />
+                    <circle id="progressCircle" class="progress" cx="175" cy="175" r="140" stroke-dasharray="879"
+                        stroke-dashoffset="879" />
+                </svg>
+
+                <div class="circle-text">
+                    <div id="percentText" class="percent">0%</div>
+                    <div id="statusLabel" class="label">Dry</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+            <h2>Manual Watering</h2>
+
+            <div class="card">
+                <div>Duration (s)</div>
+
+                <div class="controls">
+                    <button id="minusBtn">-</button>
+                    <div id="duration">0</div>
+                    <button id="plusBtn">+</button>
+                </div>
+
+                <button class="start">Start</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjmiue5jYLiWCkPnjca9h6Xz3_9HihuFg",
+            authDomain: "greensync-bc112.firebaseapp.com",
+            databaseURL: "https://greensync-bc112-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "greensync-bc112",
+            storageBucket: "greensync-bc112.firebasestorage.app",
+            messagingSenderId: "1083049987837",
+            appId: "1:1083049987837:web:814e2751ad9bc3e573b894",
+            measurementId: "G-PVXH1R31G5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Circle setup
+        const circle = document.getElementById("progressCircle");
+        const text = document.getElementById("percentText");
+        const statusLabel = document.getElementById("statusLabel");
+        const radius = 140;
+        const circumference = 2 * Math.PI * radius;
+
+        // Firebase listener
+        const moistureRef = ref(db, "sensor_kelembapan");
+
+        onValue(moistureRef, (snapshot) => {
+            const rawValue = snapshot.val() || 0;
+
+            // 215 = 40%
+            // 248 = 100%
+
+            let percent = 40 + ((rawValue - 215) * (60 / 33));
+
+            // Clamp between 0–100
+            percent = Math.max(0, Math.min(100, percent));
+
+            text.innerText = percent.toFixed(1) + "%";
+
+            // Update text and color based on moisture value
+            if (percent < 40) {
+                statusLabel.innerText = "Dry";
+                text.style.color = "#d1473d";
+            } else if (percent < 60) {
+                statusLabel.innerText = "Moist";
+                text.style.color = "#f5c06c";
+            } else if (percent < 80) {
+                statusLabel.innerText = "Moist";
+                text.style.color = "#6fff8c";
+            } else {
+                statusLabel.innerText = "Wet";
+                text.style.color = "#95f8ba";
+            }
+
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        });
+
+        // Manual Watering Duration
+        const minusBtn = document.getElementById("minusBtn");
+        const plusBtn = document.getElementById("plusBtn");
+        const durationText = document.getElementById("duration");
+
+        let durationValue = 0;
+
+        // Fetch duration from DB and sync UI
+        const durationRef = ref(db, "manual_duration");
+        onValue(durationRef, (snapshot) => {
+            const val = snapshot.val();
+            if (val !== null) {
+                durationValue = val;
+                durationText.innerText = durationValue;
+            }
+        });
+
+        const updateDuration = (newVal) => {
+            if (newVal >= 0) {
+                set(durationRef, newVal);
+            }
+        };
+
+        minusBtn.addEventListener("click", () => updateDuration(durationValue - 1));
+        plusBtn.addEventListener("click", () => updateDuration(durationValue + 1));
+    </script>
+</body>
+
+</html>
